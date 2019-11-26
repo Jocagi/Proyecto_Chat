@@ -7,7 +7,6 @@ namespace Utilities
 {
     public class LZW
     {
-
         #region Variables
 
         private static readonly int dictionaryLenght = 256;
@@ -16,7 +15,6 @@ namespace Utilities
 
         private readonly string path;
         private readonly string rutaComprimido;
-
         #endregion
 
         LZW() {}
@@ -198,6 +196,149 @@ namespace Utilities
             return rutaComprimido;
         }
 
+        public static string comprimirTexto(string text)
+        {
+            string output = "";
+
+            //Crear dicionario
+            var diccionario = obtenerDiccionarioCompresion();
+
+            //Analizar texto, creando diccionario y escribiendo en archivo
+            #region Algoritmo
+
+            //Empezar concatenar
+            string c = string.Empty;
+            List<int> comprimir = new List<int>();
+
+            int byteLenght = initialByteLenght;
+            int maxDictionaryLenght = dictionaryLenght;
+            string bits = "";
+
+            //Buffer para comprimir
+            foreach (var t in text)
+            {
+                string ct = c + ((char)t);
+                if (diccionario.ContainsKey(ct))
+                {
+                    c = ct;
+                }
+                else
+                {
+                    //sacarlo
+                    string ByteString = Convert.ToString(diccionario[c], 2).PadLeft(byteLenght, '0'); // produce cadena "00111111";
+                    bits += ByteString;
+
+                    while (bits.Length >= 8) //Escribir bytes en archivo 
+                    {
+                        string Byte = bits.Substring(0, 8);
+                        bits = bits.Remove(0, 8);
+
+                        output += (char) Convert.ToByte(Convert.ToInt32(Byte, 2));
+                    }
+
+                    comprimir.Add(diccionario[c]);
+                    //Aqui ya lo concatena y lo agrega
+                    diccionario.Add(ct, diccionario.Count);
+                    c = ((char)t).ToString();
+                    //Verificar tamaño de los bits
+                    if (diccionario.Count >= maxDictionaryLenght)
+                    {
+                        byteLenght++;
+                        maxDictionaryLenght = (int)Math.Pow(2, byteLenght);
+                    }
+                }
+            }
+            
+            //Ultima cadena del archivo
+            if (!string.IsNullOrEmpty(c))
+            {
+                string ByteString = Convert.ToString(diccionario[c], 2).PadLeft(byteLenght, '0'); // produce cadena "00111111";
+                bits += ByteString;
+
+                comprimir.Add(diccionario[c]);
+            }
+
+            if (bits != "") //Bits restantes
+            {
+                while (bits.Length % 8 != 0)
+                {
+                    bits += "0";
+                }
+                while (bits.Length >= 8) //Escribir bytes en archivo 
+                {
+                    string Byte = bits.Substring(0, 8);
+                    bits = bits.Remove(0, 8);
+
+                    output += (char) Convert.ToByte(Convert.ToInt32(Byte, 2));
+                }
+            }
+
+            #endregion
+
+            return output;
+        }
+
+        public string descomprimirTexto(string text)
+        {
+            int maxDictionaryLenght = LZW.dictionaryLenght;
+            string bits = "";
+            
+            //Definir diccionario
+            Dictionary<int, string> diccionario = obtenerDiccionarioDescompresion();
+
+            //Operacion inicial
+            int byteLenght = initialByteLenght;
+            int key = 0;
+            string c = diccionario[(int) Convert.ToByte(text[0])];
+            string descomprimir = c;
+
+            //Descomprimir
+            
+            for (int i = 1; i < text.Length; i++)
+            {
+                var t = text[i];
+
+                if (diccionario.Count + 1 >= maxDictionaryLenght)
+                {
+                    byteLenght++;
+                    maxDictionaryLenght = (int)Math.Pow(2, byteLenght);
+                }
+
+                string ByteString = Convert.ToString(t, 2).PadLeft(8, '0'); // produce cadena "00111111";
+                bits += ByteString;
+
+                if (bits.Length >= byteLenght)
+                {
+                    key = Convert.ToInt32(bits.Substring(0, byteLenght), 2);
+                    bits = bits.Remove(0, byteLenght);
+
+                    string entry = null;
+                    if (diccionario.ContainsKey(key))
+                    {
+                        entry = diccionario[key];
+                    }
+                    else if (key == diccionario.Count)
+                    {
+                        entry = c + c[0];
+                    }
+
+                    descomprimir += entry;
+
+                    //  Agregar nueva frase al diccionario
+
+                    if (entry != null)
+                    {
+                        diccionario.Add(diccionario.Count, c + entry[0]);
+                    }
+
+                    c = entry;
+                }
+            }
+            
+            return descomprimir;
+        }
+
+
         private static Dictionary<int, string> obtenerDiccionarioDescompresion()
         {
             Dictionary<int, string> diccionario = new Dictionary<int, string>();
@@ -233,6 +374,17 @@ namespace Utilities
             {
                 throw new Exception("Exception caught in process: {0}", ex);
             }
+        }
+
+        private static string ByteArrayToString(byte[] byteArray)
+        {
+            string output = "";
+            foreach (var _byte in byteArray)
+            {
+                output += (char) _byte;
+            }
+
+            return output;
         }
     }
 }
