@@ -289,5 +289,79 @@ namespace Utilities
             }
             return rutaCifrado;
         }
+
+        public string CifrarTexto(string text, int key)
+        {
+            GenerateKeys(key);
+
+            List<byte> input = new List<byte>();
+            string result = "";
+
+            //Convert input to byte
+            foreach (var item in text)
+            {
+                input.Add((byte) item);
+            }
+            
+            //Cifrar
+            List<byte> CompresionBytes = new List<byte>();
+
+            foreach (var item in input)
+            {
+                string _byte = ConvertByteToString(item);
+                string InitialPermutation = Permutate(_byte, this.PI);
+
+                string result1 = Swap(AlgorithmSDES(InitialPermutation, this.K1));
+                string result2 = Permutate(AlgorithmSDES(result1, K2), this.PIn);
+
+                CompresionBytes.Add(ConvertStringToByte(result2));
+            }
+
+            //Convertir bytes a string
+
+            foreach (var item in CompresionBytes)
+            {
+                result += (char) item;
+            }
+
+            return result;
+        }
+
+        public string DescifrarTexto(string text, int key)
+        {
+            GenerateKeys(key);
+
+            List<byte> input = new List<byte>();
+            string result = "";
+
+            //Convert input to byte
+            foreach (var item in text)
+            {
+                input.Add((byte)item);
+            }
+
+            //Descifrar
+            List<byte> CompresionBytes = new List<byte>();
+
+            foreach (var item in input)
+            {
+                string _byte = ConvertByteToString(item);
+                string InitialPermutation = Permutate(_byte, this.PI);
+
+                string result1 = Swap(AlgorithmSDES(InitialPermutation, this.K2));
+                string result2 = Permutate(AlgorithmSDES(result1, K1), this.PIn);
+
+                CompresionBytes.Add(ConvertStringToByte(result2));
+            }
+
+            //Convertir bytes a string
+
+            foreach (var item in CompresionBytes)
+            {
+                result += (char)item;
+            }
+
+            return result;
+        }
     }
 }
