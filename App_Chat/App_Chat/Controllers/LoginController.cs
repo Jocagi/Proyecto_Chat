@@ -20,6 +20,7 @@ namespace App_Chat.Controllers
         // GET: Login
         public ActionResult Login()
         {
+            ViewBag.Message = "";
             HttpContext.Response.Cookies.Add(new HttpCookie("language", "SPANISH"));
             return View();
         }
@@ -51,13 +52,14 @@ namespace App_Chat.Controllers
 
                         //Guardar cookie con el token de inicio de sesion
                         HttpContext.Response.Cookies.Add(new HttpCookie("userId", result));
-                        HttpContext.Response.SetStatus(200);
+                        
                         return RedirectToAction("Index", "Home");
                     }
                 }
             }
             catch (Exception)
             {
+                ViewBag.Message = "Usuario o contraseña incorrecto";
                 return View();
             }
         }
