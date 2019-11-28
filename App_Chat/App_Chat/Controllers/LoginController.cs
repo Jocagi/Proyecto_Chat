@@ -10,6 +10,8 @@ using App_Chat.Models;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web.WebPages;
+using Microsoft.AspNetCore.Http;
 
 namespace App_Chat.Controllers
 {
@@ -18,13 +20,13 @@ namespace App_Chat.Controllers
         // GET: Login
         public ActionResult Login()
         {
+            HttpContext.Response.Cookies.Add(new HttpCookie("language", "SPANISH"));
             return View();
         }
         [HttpPost]
         public ActionResult Login(string username, string password)
         {
-            //To Do... Validar en Base de Datos y redirigir al chat
-
+            
             string strUrl = String.Format("https://localhost:44316/api/token");
 
             string postUrl = $"{strUrl}/?username={username}&password={password}";
@@ -32,22 +34,32 @@ namespace App_Chat.Controllers
             WebRequest requestObjPost = WebRequest.Create(postUrl);
             requestObjPost.Method = "POST";
             requestObjPost.ContentType = "application/json";
-            
-            using (var streamWriter = new StreamWriter(requestObjPost.GetRequestStream()))
-            {
-                streamWriter.Write("");
-                streamWriter.Flush();
-                streamWriter.Close();
 
-                var httpResponse = (HttpWebResponse) requestObjPost.GetResponse();
-                
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            try
+            {
+                using (var streamWriter = new StreamWriter(requestObjPost.GetRequestStream()))
                 {
-                    var result = streamReader.ReadToEnd();
+                    streamWriter.Write("");
+                    streamWriter.Flush();
+                    streamWriter.Close();
+
+                    var httpResponse = (HttpWebResponse)requestObjPost.GetResponse();
+
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        var result = streamReader.ReadToEnd();
+
+                        //Guardar cookie con el token de inicio de sesion
+                        HttpContext.Response.Cookies.Add(new HttpCookie("userId", result));
+                        HttpContext.Response.SetStatus(200);
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
-
-            return View();
+            catch (Exception)
+            {
+                return View();
+            }
         }
     }
 }

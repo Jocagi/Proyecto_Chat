@@ -1,6 +1,4 @@
-﻿@model App_Chat.Models.UserLogin
-
-@{
+﻿@{
     Layout = null;
 }
 
@@ -19,31 +17,21 @@
 
 
 <div class="login">
-    <h1>Login</h1>
+    <h1>Login</h1> <br>
     <form method="post">
 
         <input type="text" id="username" name="username" placeholder="Username" required="required"/>
         <input type="password" id="password" name="password" placeholder="Password" required="required"/>
         
-        <!--Bootstrap alert to display error message if the login fails-->
-        <div id="divError" class="alert alert-danger collapse">
-            <a id="linkClose" href="#" class="close">&times;</a>
-            <div id="divErrorText"></div>
-        </div>
-
         <button type="submit" class="btn btn-primary btn-block btn-large" id="btnLogin">Ingresar</button>
     </form>
     
     <script type="text/javascript">
         $(document).ready(function () {
-
-            $('#linkClose').click(function () {
-                $('#divError').hide('fade');
-            });
-
+            
             $('#btnLogin').click(function () {
                 $.ajax({
-                    // Post username, password & the grant type to /token
+                    // Post username y password
                     url: '/login',
                     method: 'POST',
                     contentType: 'application/json',
@@ -53,19 +41,13 @@
                         grant_type: 'password'
                     },
 
-                    // When the request completes successfully, save the
-                    // access token in the browser session storage and
-                    // redirect the user. 
-
                     success: function (response) {
                         sessionStorage.setItem("accessToken", response.access_token);
                         window.location.href = "~/Home/Index";
                     },
                     // Display errors if any in the Bootstrap alert <div>
                     error: function (jqXHR) {
-                        $('#divErrorText').text(jqXHR.responseText);
-                        $('#divError').show('fade');
-                        alert('POST failed.');
+                        alert('Usuario o contraseña incorrecta.');
                     }
                 });
             });
