@@ -53,7 +53,7 @@ namespace App_Chat.Controllers
                         //Guardar cookie con el token de inicio de sesion
                         HttpContext.Response.Cookies.Add(new HttpCookie("userId", result));
                         
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Chat");
                     }
                 }
             }
