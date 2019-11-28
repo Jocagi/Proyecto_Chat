@@ -12,28 +12,66 @@
     <title>Login</title>
 </head>
 <body>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
-    
-    
-    @using (Html.BeginForm()) 
-    {
-        @Html.AntiForgeryToken()
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+@Styles.Render("~/Content/css")
+
+
+<div class="login">
+    <h1>Login</h1>
+    <form method="post">
+
+        <input type="text" id="username" name="username" placeholder="Username" required="required"/>
+        <input type="password" id="password" name="password" placeholder="Password" required="required"/>
         
-        <div class="form-horizontal">
-            <h4>UserLogin</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
+        <!--Bootstrap alert to display error message if the login fails-->
+        <div id="divError" class="alert alert-danger collapse">
+            <a id="linkClose" href="#" class="close">&times;</a>
+            <div id="divErrorText"></div>
         </div>
-    }
+
+        <button type="submit" class="btn btn-primary btn-block btn-large" id="btnLogin">Ingresar</button>
+    </form>
     
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#linkClose').click(function () {
+                $('#divError').hide('fade');
+            });
+
+            $('#btnLogin').click(function () {
+                $.ajax({
+                    // Post username, password & the grant type to /token
+                    url: '/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        username: $('#username').val(),
+                        password: $('#password').val(),
+                        grant_type: 'password'
+                    },
+
+                    // When the request completes successfully, save the
+                    // access token in the browser session storage and
+                    // redirect the user. 
+
+                    success: function (response) {
+                        sessionStorage.setItem("accessToken", response.access_token);
+                        window.location.href = "~/Home/Index";
+                    },
+                    // Display errors if any in the Bootstrap alert <div>
+                    error: function (jqXHR) {
+                        $('#divErrorText').text(jqXHR.responseText);
+                        $('#divError').show('fade');
+                        alert('POST failed.');
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+
 </body>
 </html>

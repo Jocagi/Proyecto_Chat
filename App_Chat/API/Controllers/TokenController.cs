@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using API.Services;
 
 namespace API.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class TokenController : Controller
@@ -21,7 +23,7 @@ namespace API.Controllers
         {
             this.token = token;
         }
-
+        
         [HttpPost]
         public IActionResult Post(string username, string password)
         {
