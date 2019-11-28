@@ -41,7 +41,6 @@ namespace API
             services.AddSingleton<TokenProvider>();
 
             //JWT Authentication
-            
             var token = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
                 (Configuration.GetSection("TokenSettings:SecretKey").Value));
             
@@ -75,9 +74,12 @@ namespace API
             {
                 app.UseHsts();
             }
+            
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
         }
     }
 }

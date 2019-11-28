@@ -35,7 +35,6 @@ namespace API.Controllers
 
             //Si llega hasta aqui, algo salio mal...
             return BadRequest();
-
         }
     }
 }
