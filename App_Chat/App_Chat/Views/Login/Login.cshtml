@@ -1,6 +1,4 @@
-﻿@model App_Chat.Models.UserLogin
-
-@{
+﻿@{
     Layout = null;
 }
 
@@ -12,28 +10,45 @@
     <title>Login</title>
 </head>
 <body>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
-    
-    
-    @using (Html.BeginForm()) 
-    {
-        @Html.AntiForgeryToken()
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+@Styles.Render("~/Content/css")
+
+
+<div class="login">
+    <h1>Login</h1> <br>
+    <form method="post">
+
+        <input type="text" id="username" name="username" placeholder="Username" required="required"/>
+        <input type="password" id="password" name="password" placeholder="Password" required="required"/>
         
-        <div class="form-horizontal">
-            <h4>UserLogin</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
+        <button type="submit" class="btn btn-primary btn-block btn-large" id="btnLogin">Ingresar</button>
+        
+        <div class="alert">
+                <text style="color: red">@ViewBag.Message</text>
         </div>
-    }
+    </form>
     
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $('#btnLogin').click(function () {
+                $.ajax({
+                    // Post username y password
+                    url: '/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        username: $('#username').val(),
+                        password: $('#password').val(),
+                        grant_type: 'password'
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+
 </body>
 </html>

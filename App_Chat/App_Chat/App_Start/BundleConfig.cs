@@ -24,7 +24,12 @@ namespace App_Chat
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/Login.css",
+                      "~/Content/Chat.css"));
+            bundles.Add(new StyleBundle("~/Chat/css").Include(
+                "~/Content/bootstrap.css",
+                "~/Content/Chat.css"));
         }
     }
 }

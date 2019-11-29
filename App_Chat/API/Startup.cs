@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Controllers;
+using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,6 +62,17 @@ namespace API
                         ClockSkew = TimeSpan.FromMinutes(5)
                     };
                 });
+
+            //Chat Database Configuration
+            
+            services.Configure<ChatDatabaseSettings>(
+                Configuration.GetSection(nameof(ChatDatabaseSettings)));
+
+            services.AddSingleton<IChatDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
+
+            services.AddSingleton<ChatService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

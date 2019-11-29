@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App_Chat", "App_Chat\App_Chat.csproj", "{CB673D4C-40BC-4BB9-AFFE-2CF4F3A1B490}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B459919-3062-4275-AC2F-B8E695B31F04} = {2B459919-3062-4275-AC2F-B8E695B31F04}
+		{021B10D2-B57C-4ED6-A670-6772B82B7A99} = {021B10D2-B57C-4ED6-A670-6772B82B7A99}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{2B459919-3062-4275-AC2F-B8E695B31F04}"
 EndProject
