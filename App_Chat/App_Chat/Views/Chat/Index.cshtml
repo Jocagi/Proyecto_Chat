@@ -63,13 +63,10 @@
                 <img alt="List View" src="@Url.Content("~/Images/Buscar.png")" width="10" height="10">
             </div>
             
-            @*no tocar*@
-            <p id="CurrentChat" class="hidden"></p>
-
             <div id="contacts">
                 <ul style="list-style-type: none">
 
-                    <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='Alice'">
+                    <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='  Alice'">
                         <div class="wrap">
                             <img alt="" src="@Url.Content("~/Images/Gaticornio.png")">
                             <div class="meta">
@@ -80,7 +77,7 @@
 
                     @foreach (var item in Model.Contactos)
                     {
-                        <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='@item.username';">
+                        <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='  @item.username';">
                             <div class="wrap">
                                 <img alt="" src="@Url.Content(item.imagen)">
                                 <div class="meta">
@@ -103,8 +100,7 @@
         <div class="content">
 
             <div class="contact-profile">
-                <img alt="" src="@Url.Content("~/Images/Gaticornio.png")">
-                <p>Alice</p>
+                <p style="font-size: xx-large; align-content: center;" id="CurrentChat">Alice</p>
             </div>
 
             <div class="messages">
@@ -160,19 +156,10 @@
         };
 
         function newMessage() {
-            
-            $.ajax({
-                url: '/Chat/Index',
-                method: 'POST',
-                contentType: 'application/json',
-                data:
-                {
-                    persona: "hola",
-                    mensaje: "hola"
-                }
-            });
 
+            var persona = document.getElementById('CurrentChat').innerHTML;
             message = $(".message-input input").val();
+
             if ($.trim(message) == '') {
                 return false;
             }
@@ -180,6 +167,12 @@
             $('.message-input input').val(null);
             $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
+
+            $.ajax({
+                url: '/Chat/Index?persona=' + persona + '&mensaje=' + message,
+                method: 'POST',
+                contentType: 'json'
+            });
         };
 
         $('.submit').click(function () {

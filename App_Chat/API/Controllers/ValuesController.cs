@@ -15,7 +15,6 @@ namespace API.Controllers
         // GET api/values
        
         [HttpGet]
-        [Authorize]
         public ActionResult<IEnumerable<string>> Get()
         {
              var claimsIdentity = User.Identity as ClaimsIdentity;

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Models;
 using API.Services;
+using App_Chat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,22 +45,22 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult<Chat> NewMessage(string mensaje, string receptor)
+        public ActionResult<Chat> NewMessage(MensajeModelo received)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
 
             string emisor = claimsIdentity.Name;
-            string id = emisor + receptor;
-            string id2 = receptor + emisor;
+            string id = emisor + received.receptor;
+            string id2 = received.receptor + emisor;
 
             try
             {
                 //Post en el chat de ambas personas
-                _ChatService.Post(new Message(false, mensaje, false, ""), _ChatService.Get(id));
-                _ChatService.Post(new Message(true, mensaje, false, ""), _ChatService.Get(id2));
+                _ChatService.Post(new Message(false, received.mensaje, false, ""), _ChatService.Get(id));
+                _ChatService.Post(new Message(true, received.mensaje, false, ""), _ChatService.Get(id2));
                 return Ok();
             }
-            catch (Exception e)
+             catch (Exception e)
             {
                 return BadRequest();
             }

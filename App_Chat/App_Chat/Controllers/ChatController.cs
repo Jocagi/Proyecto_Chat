@@ -21,30 +21,37 @@ namespace App_Chat.Controllers
         [HttpPost]
         public ActionResult Index(string persona, string mensaje)
         {
-            string token = HttpContext.Request.Cookies["userID"].Value;
-
-            MensajeModelo nuevo = new MensajeModelo();
-            nuevo.mensaje = mensaje;
-            nuevo.receptor = persona;
-
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("https://localhost:44316/api/");
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                string token = HttpContext.Request.Cookies["userID"].Value;
 
-                var postJob = client.PostAsJsonAsync<MensajeModelo>("NewMessage", nuevo);
-                postJob.Wait();
+                MensajeModelo nuevo = new MensajeModelo();
+                nuevo.mensaje = mensaje;
+                nuevo.receptor = persona;
 
-                var postResult = postJob.Result;
-                if (postResult.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    return RedirectToAction("Index");
+                    client.BaseAddress = new Uri("https://localhost:44316/api/chat/NewMessage/");
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    var postJob = client.PostAsJsonAsync<MensajeModelo>("", nuevo);
+                    postJob.Wait();
+
+                    var postResult = postJob.Result;
+                    if (postResult.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Login");
+                    }
                 }
-                else
-                {
-                    return RedirectToAction("Login", "Login");
-                }
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Login", "Login");
             }
         }
 
