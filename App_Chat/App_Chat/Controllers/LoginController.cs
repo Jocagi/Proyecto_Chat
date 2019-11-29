@@ -51,7 +51,7 @@ namespace App_Chat.Controllers
                         var result = streamReader.ReadToEnd();
 
                         //Guardar cookie con el token de inicio de sesion
-                        HttpContext.Response.Cookies.Add(new HttpCookie("userId", result));
+                        HttpContext.Response.Cookies.Add(new HttpCookie("userID", result));
                         
                         return RedirectToAction("Index", "Chat");
                     }
@@ -60,6 +60,7 @@ namespace App_Chat.Controllers
             catch (Exception)
             {
                 ViewBag.Message = "Usuario o contraseña incorrecto";
+                
                 return View();
             }
         }

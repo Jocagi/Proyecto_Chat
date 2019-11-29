@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Models;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +29,8 @@ namespace API.Controllers
             _ChatService.Get();
 
         [HttpGet("{id:length(24)}", Name = "GetChat")]
-        public ActionResult<Chat> Get(string id)
+        [Authorize]
+        public ActionResult<List<Message>> Get(string id)
         {
             var Chat = _ChatService.Get(id);
 
@@ -35,30 +39,30 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Chat;
+            return Chat.mensajes;
         }
 
         [HttpPost]
-        public ActionResult<Chat> Create(Chat Chat)
+        [Authorize]
+        public ActionResult<Chat> NewMessage(string mensaje, string receptor)
         {
-            _ChatService.Create(Chat);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
 
-            return CreatedAtRoute("GetChat", new { id = Chat.Id.ToString() }, Chat);
-        }
+            string emisor = claimsIdentity.Name;
+            string id = emisor + receptor;
+            string id2 = receptor + emisor;
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Chat ChatIn)
-        {
-            var Chat = _ChatService.Get(id);
-
-            if (Chat == null)
+            try
             {
-                return NotFound();
+                //Post en el chat de ambas personas
+                _ChatService.Post(new Message(false, mensaje, false, ""), _ChatService.Get(id));
+                _ChatService.Post(new Message(true, mensaje, false, ""), _ChatService.Get(id2));
+                return Ok();
             }
-
-            _ChatService.Update(id, ChatIn);
-
-            return NoContent();
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id:length(24)}")]

@@ -14,8 +14,8 @@ namespace API.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id;
 
-        [BsonElement("Name")]
-        [JsonProperty("Name")]
+        [BsonElement("ChatID")]
+        [JsonProperty("ChatID")]
         public string ChatID;
         public List<Message> mensajes;
     }

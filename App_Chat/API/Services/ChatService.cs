@@ -22,15 +22,17 @@ namespace API.Services
         public List<Chat> Get() =>
             _Chat.Find(Chat => true).ToList();
 
+        //Obtener chat por nombre
         public Chat Get(string id) =>
-            _Chat.Find<Chat>(Chat => Chat.Id == id).FirstOrDefault();
+            _Chat.Find<Chat>(Chat => Chat.ChatID == id).FirstOrDefault();
 
-        public Chat Create(Chat Chat)
+        //Agregar un mensaje
+        public void Post(Message mensaje, Chat chat)
         {
-            _Chat.InsertOne(Chat);
-            return Chat;
+            chat.mensajes.Add(mensaje);
+            _Chat.ReplaceOne(Chat => Chat.ChatID == chat.ChatID, chat);
         }
-
+        
         public void Update(string id, Chat ChatIn) =>
             _Chat.ReplaceOne(Chat => Chat.Id == id, ChatIn);
 

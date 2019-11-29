@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Mvc;
 using App_Chat.Models;
@@ -14,6 +16,36 @@ namespace App_Chat.Controllers
         public ActionResult Index()
         {
             return View(obtenerContactos());
+        }
+
+        [HttpPost]
+        public ActionResult Index(string persona, string mensaje)
+        {
+            string token = HttpContext.Request.Cookies["userID"].Value;
+
+            MensajeModelo nuevo = new MensajeModelo();
+            nuevo.mensaje = mensaje;
+            nuevo.receptor = persona;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44316/api/");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+
+                var postJob = client.PostAsJsonAsync<MensajeModelo>("NewMessage", nuevo);
+                postJob.Wait();
+
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Login");
+                }
+            }
         }
 
         private ListaDeContactos obtenerContactos()
@@ -38,6 +70,5 @@ namespace App_Chat.Controllers
                 return "";
             }
         }
-        
     }
 }

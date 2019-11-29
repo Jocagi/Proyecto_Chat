@@ -160,6 +160,18 @@
         };
 
         function newMessage() {
+            
+            $.ajax({
+                url: '/Chat/Index',
+                method: 'POST',
+                contentType: 'application/json',
+                data:
+                {
+                    persona: "hola",
+                    mensaje: "hola"
+                }
+            });
+
             message = $(".message-input input").val();
             if ($.trim(message) == '') {
                 return false;
@@ -167,6 +179,7 @@
             $('<li class="sent"><p>' + message + '</p></li>').appendTo($('.messages ul'));
             $('.message-input input').val(null);
             $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+
         };
 
         $('.submit').click(function () {
