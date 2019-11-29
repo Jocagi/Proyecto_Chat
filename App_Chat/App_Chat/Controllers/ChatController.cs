@@ -28,14 +28,16 @@ namespace App_Chat.Controllers
                 MensajeModelo nuevo = new MensajeModelo();
                 nuevo.mensaje = mensaje;
                 nuevo.receptor = persona;
+                nuevo.receptor = nuevo.receptor.Replace(" ", "");
+                
 
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44316/api/chat/NewMessage/");
+                    client.BaseAddress = new Uri("https://localhost:44316/api/chat");
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);
 
-                    var postJob = client.PostAsJsonAsync<MensajeModelo>("", nuevo);
+                    var postJob = client.PostAsJsonAsync<MensajeModelo>("chat", nuevo);
                     postJob.Wait();
 
                     var postResult = postJob.Result;
@@ -68,13 +70,55 @@ namespace App_Chat.Controllers
         [HttpGet]
         public string Mensajes(string id)
         {
-            if (!string.IsNullOrEmpty(id))
+
+            IEnumerable<Message> misMensajes = null;
+
+            try
             {
-                return $"<li class=\"sent\"><p>{id}</p> </li> <li class=\"replies\"><p>Mucho gusto</p></li>";
+                string token = HttpContext.Request.Cookies["userID"].Value;
+
+                using (var client = new HttpClient())
+                {
+                    string adress = "/api/chat/" + id;
+                    client.BaseAddress = new Uri("https://localhost:44316/api/chat");
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                    var responseTask = client.GetAsync(adress);
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readJob = result.Content.ReadAsAsync<IList<Message>>();
+                        readJob.Wait();
+                        misMensajes = readJob.Result;
+
+                        //Convertir lista a html
+                        string html = "";
+
+                        foreach (var item in misMensajes)
+                        {
+                            if (item.recibido)
+                            {
+                                html += $"<li class=\"replies\"><p>{item.texto}</p></li>";
+                            }
+                            else
+                            {
+                                html += $"<li class=\"sent\"><p>{item.texto}</p></li>";
+                            }
+                        }
+
+                        return html;
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
             }
-            else
+            catch (Exception e)
             {
                 return "";
+                throw;
             }
         }
     }

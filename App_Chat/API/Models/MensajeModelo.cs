@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace App_Chat.Models
+namespace API.Models
 {
     public class MensajeModelo
     {

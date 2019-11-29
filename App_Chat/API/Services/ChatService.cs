@@ -9,38 +9,32 @@ namespace API.Services
 {
     public class ChatService
     {
-        private readonly IMongoCollection<Chat> _Chat;
+        private readonly IMongoCollection<Message> _Chat;
 
         public ChatService(IChatDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            _Chat = database.GetCollection<Chat>(settings.ChatCollectionName);
+            _Chat = database.GetCollection<Message>(settings.ChatCollectionName);
         }
 
-        public List<Chat> Get() =>
+        public List<Message> Get() =>
             _Chat.Find(Chat => true).ToList();
 
         //Obtener chat por nombre
-        public Chat Get(string id) =>
-            _Chat.Find<Chat>(Chat => Chat.ChatID == id).FirstOrDefault();
+        public List<Message> Get(string id) =>
+            _Chat.Find<Message>(Chat => Chat.chatID == id).ToList();
 
         //Agregar un mensaje
-        public void Post(Message mensaje, Chat chat)
+        public void Post(Message mensaje)
         {
-            chat.mensajes.Add(mensaje);
-            _Chat.ReplaceOne(Chat => Chat.ChatID == chat.ChatID, chat);
+            _Chat.InsertOne(mensaje);
         }
         
-        public void Update(string id, Chat ChatIn) =>
-            _Chat.ReplaceOne(Chat => Chat.Id == id, ChatIn);
-
-        public void Remove(Chat ChatIn) =>
-            _Chat.DeleteOne(Chat => Chat.Id == ChatIn.Id);
-
-        public void Remove(string id) =>
-            _Chat.DeleteOne(Chat => Chat.Id == id);
+        public void Remove(string id, string contenido) =>
+            _Chat.DeleteOne(Chat => Chat.chatID == id && Chat.texto == contenido);
+        
     }
 }
 

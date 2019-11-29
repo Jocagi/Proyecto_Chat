@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Models;
 using API.Services;
-using App_Chat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,21 +25,26 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Chat>> Get() =>
+        public ActionResult<List<Message>> Get() =>
             _ChatService.Get();
 
         [HttpGet("{id:length(24)}", Name = "GetChat")]
         [Authorize]
         public ActionResult<List<Message>> Get(string id)
         {
-            var Chat = _ChatService.Get(id);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            string emisor = claimsIdentity.Name;
+            string busqueda = emisor + id;
+            
+            var Chat = _ChatService.Get(busqueda);
 
             if (Chat == null)
             {
                 return NotFound();
             }
 
-            return Chat.mensajes;
+            return Chat;
         }
 
         [HttpPost]
@@ -56,8 +60,8 @@ namespace API.Controllers
             try
             {
                 //Post en el chat de ambas personas
-                _ChatService.Post(new Message(false, received.mensaje, false, ""), _ChatService.Get(id));
-                _ChatService.Post(new Message(true, received.mensaje, false, ""), _ChatService.Get(id2));
+                _ChatService.Post(new Message(id,false, received.mensaje, false, ""));
+                _ChatService.Post(new Message(id2,true, received.mensaje, false, ""));
                 return Ok();
             }
              catch (Exception e)
@@ -67,7 +71,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(string id, string mensaje)
         {
             var Chat = _ChatService.Get(id);
 
@@ -76,7 +80,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            _ChatService.Remove(Chat.Id);
+            _ChatService.Remove(id, mensaje);
 
             return NoContent();
         }
