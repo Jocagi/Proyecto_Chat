@@ -89,6 +89,7 @@ namespace API
             
             app.UseAuthentication();
 
+
             app.UseHttpsRedirection();
             app.UseMvc();
 
