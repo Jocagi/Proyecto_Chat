@@ -1,12 +1,12 @@
-﻿using App_Chat.Models;
+﻿using APIS.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace App_Chat.Service
+namespace API.Services
 {
     public class UsuarioService
     {
-        private readonly IMongoCollection<Usuario>
+        private readonly IMongoCollection<>
     }
 }
