@@ -9,11 +9,10 @@ namespace API.Models
 {
     public class Usuarios
     {
-      //  [BsonId]
-      //  [BsonRepresentation(BsonType.ObjectId)]
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Nombre { get; set; }
         public string User { get; set; }
-        // [BsonElement("Name")]
     }
 }
