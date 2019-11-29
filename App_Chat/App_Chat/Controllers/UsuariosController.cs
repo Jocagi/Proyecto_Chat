@@ -13,26 +13,52 @@ namespace App_Chat.Controllers
         // GET: Usuarios
         public ActionResult Index()
         {
-            IEnumerable<UsuariosController> Usuario = null;
+            //IEnumerable<UsuariosController> Usuario = null;
+            //using (var usuario = new HttpClient())
+            //{
+            //    usuario.BaseAddress = new Uri("http://localhost:44316/API");
+            //    var responseTask = usuario.GetAsync("usuario");
+            //    responseTask.Wait();
+
+            //    var result = responseTask.Result;
+            //    if(result.IsSuccessStatusCode)
+            //    {
+            //        var readJob = result.Content.ReadAsAsync<IList<UsuariosController>>();
+            //        readJob.Wait();
+            //        Usuario = readJob.Result;
+            //    }
+            //    else
+            //    {
+            //        Usuario = Enumerable.Empty<UsuariosController>();
+            //        ModelState.AddModelError(string.Empty, "No se puede ingresar el usuario");
+            //    }
+            //}
+            return View();
+        }
+
+        //Post
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+
+        public ActionResult Create(Usuarios Usuario)
+        {
             using (var usuario = new HttpClient())
             {
-                usuario.BaseAddress = new Uri("http://localhost:44316/");
-                var responseTask = usuario.GetAsync("usuario");
-                responseTask.Wait();
+                usuario.BaseAddress = new Uri("http://localhost:44316");
+                var postJob = usuario.PostAsJsonAsync<Usuarios>("Usuarios", Usuario);
+                postJob.Wait();
 
-                var result = responseTask.Result;
-                if(result.IsSuccessStatusCode)
-                {
-                    var readJob = result.Content.ReadAsAsync<IList<UsuariosController>>();
-                    readJob.Wait();
-                    Usuario = readJob.Result;
-                }
-                else
-                {
-                    Usuario = Enumerable.Empty<UsuariosController>();
-                    ModelState.AddModelError(string.Empty, "No se puede ingresar el usuario");
-                }
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
+                    return RedirectToAction("Index");
             }
+
+            ModelState.AddModelError(string.Empty, "Error al ingresar usuario");
             return View(Usuario);
         }
     }
