@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,10 +13,13 @@ namespace API.Controllers
     public class ValuesController : ControllerBase
     {
         // GET api/values
+       
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+             var claimsIdentity = User.Identity as ClaimsIdentity;
+            
+            return new string[] { "value1", claimsIdentity.Name };
         }
 
         // GET api/values/5

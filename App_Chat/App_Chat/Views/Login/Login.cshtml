@@ -1,0 +1,54 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+@Styles.Render("~/Content/css")
+
+
+<div class="login">
+    <h1>Login</h1> <br>
+    <form method="post">
+
+        <input type="text" id="username" name="username" placeholder="Username" required="required"/>
+        <input type="password" id="password" name="password" placeholder="Password" required="required"/>
+        
+        <button type="submit" class="btn btn-primary btn-block btn-large" id="btnLogin">Ingresar</button>
+        
+        <div class="alert">
+                <text style="color: red">@ViewBag.Message</text>
+        </div>
+    </form>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $('#btnLogin').click(function () {
+                $.ajax({
+                    // Post username y password
+                    url: '/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        username: $('#username').val(),
+                        password: $('#password').val(),
+                        grant_type: 'password'
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+
+</body>
+</html>
