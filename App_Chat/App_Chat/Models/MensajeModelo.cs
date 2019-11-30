@@ -9,5 +9,6 @@ namespace App_Chat.Models
     {
         public string mensaje { get; set; }
         public string receptor { get; set; }
+        public bool esArchivo { get; set; }
     }
 }

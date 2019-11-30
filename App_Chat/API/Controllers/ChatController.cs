@@ -60,8 +60,8 @@ namespace API.Controllers
             try
             {
                 //Post en el chat de ambas personas
-                _ChatService.Post(new Message(id,false, received.mensaje, false, ""));
-                _ChatService.Post(new Message(id2,true, received.mensaje, false, ""));
+                _ChatService.Post(new Message(id,false, received.mensaje, received.esArchivo, ""));
+                _ChatService.Post(new Message(id2,true, received.mensaje, received.esArchivo, ""));
                 return Ok();
             }
              catch (Exception e)

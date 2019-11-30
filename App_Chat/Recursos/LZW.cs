@@ -12,24 +12,15 @@ namespace Utilities
         private static readonly int dictionaryLenght = 256;
         private static readonly int initialByteLenght = 8;
         private static readonly int bufferLength = 1024;
-
-        private readonly string path;
-        private readonly string rutaComprimido;
+        
         #endregion
-
-        LZW() {}
-
-        public LZW(string path)
+        
+        public static string comprimirArchivo(string pathOrigen, string pathDestino)
         {
-            this.path = path;
-
-            string nombreNuevoArchivo = Path.GetFileName(path);
-            this.rutaComprimido = Path.Combine(Directories.directorioTemporal, nombreNuevoArchivo);
+            //File
+            string nombreNuevoArchivo = Path.GetFileName(pathOrigen);
+            string rutaComprimido = Path.Combine(pathDestino, nombreNuevoArchivo);
             Archivo.crearArchivo(rutaComprimido);
-        }
-
-        public string comprimirArchivo()
-        {
 
             //Crear dicionario
             var diccionario = obtenerDiccionarioCompresion();
@@ -46,7 +37,7 @@ namespace Utilities
             string bits = "";
 
             //Buffer para comprimir
-            using (var file = new FileStream(path, FileMode.Open))
+            using (var file = new FileStream(pathOrigen, FileMode.Open))
             {
                 using (var reader = new BinaryReader(file))
                 {
@@ -120,14 +111,19 @@ namespace Utilities
             return rutaComprimido;
         }
 
-        public string descomprimirArchivo()
+        public static string descomprimirArchivo(string pathOrigen, string pathDestino)
         {
-            
+            //File
+            string nombreNuevoArchivo = Path.GetFileName(pathOrigen);
+            string rutaComprimido = Path.Combine(pathDestino, nombreNuevoArchivo);
+            Archivo.crearArchivo(rutaComprimido);
+
+
             int maxDictionaryLenght = LZW.dictionaryLenght;
 
             string bits = "";
             
-            using (var file = new FileStream(path, FileMode.Open))
+            using (var file = new FileStream(pathOrigen, FileMode.Open))
             {
                 using (var reader = new BinaryReader(file))
                 {

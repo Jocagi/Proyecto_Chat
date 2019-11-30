@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.WebPages;
 using Microsoft.AspNetCore.Http;
+using Utilities;
 
 namespace App_Chat.Controllers
 {
@@ -20,6 +21,12 @@ namespace App_Chat.Controllers
         // GET: Login
         public ActionResult Login()
         {
+
+        Directories.directorioUploads = System.Web.HttpContext.Current.Server.MapPath("~/Uploads/");
+        Directories.directorioArchivos = System.Web.HttpContext.Current.Server.MapPath("~/Files/");
+        Directories.directorioDescargas = System.Web.HttpContext.Current.Server.MapPath("~/Downloads/");
+        Directories.directorioDescargas = System.Web.HttpContext.Current.Server.MapPath("~/Temporal/");
+
             ViewBag.Message = "";
             HttpContext.Response.Cookies.Add(new HttpCookie("language", "SPANISH"));
             HttpContext.Response.Cookies.Add(new HttpCookie("cifrado", "38"));

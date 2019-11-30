@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Utilities
 {
-    class Directories
+    public class Directories
     {
-        public static string directorioUploads = "";
-        public static string directorioTemporal = "C:/Users/user/Desktop/Test/";
-        public static string directorioArchivos = "";
+        public static string directorioUploads = "C://Users/user/Desktop/Proyecto_Chat/App_Chat/App_Chat/Uploads/"; 
+        public static string directorioTemporal = "C://Users/user/Desktop/Proyecto_Chat/App_Chat/App_Chat/Temporal/";
+        public static string directorioArchivos = "C://Users/user/Desktop/Proyecto_Chat/App_Chat/App_Chat/Files/";
+        public static string directorioDescargas = "C://Users/user/Desktop/Proyecto_Chat/App_Chat/App_Chat/Downloads/";
     }
 }

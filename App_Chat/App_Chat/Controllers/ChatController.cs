@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -35,7 +36,7 @@ namespace App_Chat.Controllers
                 nuevo.mensaje = mensajeCifrado;
                 nuevo.receptor = persona;
                 nuevo.receptor = nuevo.receptor.Replace(" ", "");
-
+                nuevo.esArchivo = false;
 
                 using (var client = new HttpClient())
                 {
@@ -131,6 +132,125 @@ namespace App_Chat.Controllers
             {
                 return "Porfavor autenticarse de nuevo";
                 throw;
+            }
+        }
+
+        [HttpGet]
+        public ActionResult SubirArchivo(string id)
+        {
+            Contacto user = new Contacto();
+            user.username = id;
+
+            return View(user);
+        }
+        [HttpPost]
+        public ActionResult SubirArchivo(HttpPostedFileBase file, string persona)
+        {
+            try
+            {
+                string token = HttpContext.Request.Cookies["userID"].Value;
+                int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
+
+                //Subir archivo al servidor
+                string path = Path.Combine(Directories.directorioUploads, Path.GetFileName(file.FileName) ?? "");
+                UploadFile(path, file);
+                
+                //Comprimir
+                string rutaComprimido = LZW.comprimirArchivo(path, Directories.directorioTemporal);
+
+                //Cifrar
+                SDES cipher = new SDES();
+                string rutaCifrado = cipher.CifrarArchivo(rutaComprimido,Directories.directorioArchivos, cifradoValue);
+
+                string mensaje = $"<a href=\"/Chat/Descargar?id={rutaCifrado}\">{file.FileName}</a>";
+
+                MensajeModelo nuevo = new MensajeModelo();
+                nuevo.mensaje = cipher.CifrarTexto(mensaje, cifradoValue);
+                nuevo.receptor = persona;
+                nuevo.receptor = nuevo.receptor.Replace(" ", "");
+                nuevo.esArchivo = true;
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://localhost:44316/api/chat");
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    var postJob = client.PostAsJsonAsync<MensajeModelo>("chat", nuevo);
+                    postJob.Wait();
+
+                    var postResult = postJob.Result;
+                    if (postResult.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Login");
+                    }
+                }
+
+                return RedirectToAction("Index", "Chat");
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+        }
+
+        public void UploadFile(string path, HttpPostedFileBase file)
+        {
+            //Subir archivos al servidor
+
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+
+                    file.SaveAs(path);
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message;
+                }
+            else
+            {
+                ViewBag.Message = "No ha especificado un archivo.";
+            }
+        }
+
+        public ActionResult Descargar(string path)
+        {
+            int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
+
+            //Descifrar
+            SDES cipher = new SDES();
+            string rutaCifrado = cipher.DescifrarArchivo(path, Directories.directorioTemporal, cifradoValue);
+
+            //Descomprimir
+            string rutaComprimido = LZW.descomprimirArchivo(rutaCifrado, Directories.directorioDescargas);
+
+            //Descargar
+
+            if (!String.IsNullOrEmpty(rutaComprimido))
+            {
+                byte[] filedata = System.IO.File.ReadAllBytes(rutaComprimido);
+
+                var cd = new System.Net.Mime.ContentDisposition
+                {
+                    FileName = Path.GetFileName(rutaComprimido),
+                    Inline = true,
+                };
+                
+                Response.AppendHeader("Content-Disposition", cd.ToString());
+                return File(filedata, "application/force-download");
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
     }

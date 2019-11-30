@@ -1,0 +1,21 @@
+﻿@model App_Chat.Models.Contacto
+@{
+    ViewBag.Title = "SubirArchivo";
+    Layout = null;
+}
+
+@Styles.Render("~/Chat/css")
+
+
+<h2>Enviar Archivo a:</h2> <p>@Model.username</p>
+<div class="jumbotron">
+    @using (Html.BeginForm("SubirArchivo", "Chat", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" id="file" /><br>
+        <input type="text" name="persona" id="persona" value="@Model.username" class="hidden" /><br>
+
+        <input type="submit" value="Subir" />
+    }
+</div>
+
+

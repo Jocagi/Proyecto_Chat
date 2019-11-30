@@ -222,6 +222,7 @@
     <Content Include="Views\User\CrearUsuario.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Chat\Index.cshtml" />
+    <Content Include="Views\Chat\SubirArchivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

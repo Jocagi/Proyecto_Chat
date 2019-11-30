@@ -211,17 +211,17 @@ namespace Utilities
             return result;
         }
 
-        public string CifrarArchivo(string path, int key)
+        public string CifrarArchivo(string pathOrigen, string pathDestino, int key)
         {
             GenerateKeys(key);
 
             #region Crear_Archivo
-            string NuevoArchivo = Path.GetFileName(path);
-            string rutaCifrado = Directories.directorioArchivos + NuevoArchivo;
+            string NuevoArchivo = Path.GetFileName(pathOrigen);
+            string rutaCifrado = pathDestino + NuevoArchivo;
             Archivo.crearArchivo(rutaCifrado);
             #endregion
 
-            using (var file = new FileStream(path, FileMode.Open))
+            using (var file = new FileStream(pathOrigen, FileMode.Open))
             {
                 using (var reader = new BinaryReader(file))
                 {
@@ -251,17 +251,17 @@ namespace Utilities
             return rutaCifrado;
         }
 
-        public string DescifrarArchivo(string path, int key)
+        public string DescifrarArchivo(string pathOrigen, string pathDestino, int key)
         {
             GenerateKeys(key);
 
             #region Crear_Archivo
-            string NuevoArchivo = Path.GetFileName(path);
-            string rutaCifrado = Directories.directorioArchivos + NuevoArchivo;
+            string NuevoArchivo = Path.GetFileName(pathOrigen);
+            string rutaCifrado = pathDestino + NuevoArchivo;
             Archivo.crearArchivo(rutaCifrado);
             #endregion
 
-            using (var file = new FileStream(path, FileMode.Open))
+            using (var file = new FileStream(pathOrigen, FileMode.Open))
             {
                 using (var reader = new BinaryReader(file))
                 {
