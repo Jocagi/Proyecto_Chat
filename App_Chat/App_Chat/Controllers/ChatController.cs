@@ -162,7 +162,11 @@ namespace App_Chat.Controllers
                 SDES cipher = new SDES();
                 string rutaCifrado = cipher.CifrarArchivo(rutaComprimido,Directories.directorioArchivos, cifradoValue);
 
-                string mensaje = $"<a href=\"/Chat/Descargar?id={rutaCifrado}\">{file.FileName}</a>";
+                //Pasar ruta como parametro
+                string rutaAmigable = rutaCifrado.Replace("/", "~");
+                rutaAmigable = rutaAmigable.Replace(@"\", "~");
+
+                string mensaje = $"<a href=\"/Chat/Descargar?path={rutaAmigable}\" onclick=\"clickAndDisable(this);\">{file.FileName}</a>";
 
                 MensajeModelo nuevo = new MensajeModelo();
                 nuevo.mensaje = cipher.CifrarTexto(mensaje, cifradoValue);
@@ -221,9 +225,12 @@ namespace App_Chat.Controllers
                 ViewBag.Message = "No ha especificado un archivo.";
             }
         }
-
+        
         public ActionResult Descargar(string path)
         {
+            //Recuperar path
+            path = path.Replace("~", "/");
+
             int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
 
             //Descifrar

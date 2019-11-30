@@ -25,7 +25,6 @@ namespace App_Chat.Controllers
         Directories.directorioUploads = System.Web.HttpContext.Current.Server.MapPath("~/Uploads/");
         Directories.directorioArchivos = System.Web.HttpContext.Current.Server.MapPath("~/Files/");
         Directories.directorioDescargas = System.Web.HttpContext.Current.Server.MapPath("~/Downloads/");
-        Directories.directorioDescargas = System.Web.HttpContext.Current.Server.MapPath("~/Temporal/");
 
             ViewBag.Message = "";
             HttpContext.Response.Cookies.Add(new HttpCookie("language", "SPANISH"));

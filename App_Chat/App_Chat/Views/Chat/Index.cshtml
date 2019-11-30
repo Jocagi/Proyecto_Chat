@@ -132,12 +132,20 @@
 
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
+    function clickAndDisable(link) {
+        // disable subsequent clicks
+        link.onclick = function(event) {
+            event.preventDefault();
+            window.location.href = "/Chat/Index";
+        }
+    }   
+
     //Refrescar pagina
     setInterval(
         function () {
             getMessages();
             document.getElementById('persona').elementValue = document.getElementById('CurrentChat').innerHTML;
-        }, 5000);
+        }, 10000);
 
     function getMessages() {
         //Obtener Mensajes
