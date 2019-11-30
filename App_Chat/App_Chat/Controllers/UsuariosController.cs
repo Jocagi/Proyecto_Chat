@@ -36,22 +36,20 @@ namespace App_Chat.Controllers
             return View();
         }
 
-        //Post
-
-        public ActionResult Create()
+        public ActionResult CrearUsuario()
         {
             return View();
         }
 
         [HttpPost]
-
-        public ActionResult Create(Usuarios Usuario)
+        public ActionResult CrearUsuario(Usuarios Usuario)
         {
+
             using (var usuario = new HttpClient())
             {
-                usuario.BaseAddress = new Uri("http://localhost:44316/api/");
-                var postJob = usuario.PostAsJsonAsync<Usuarios>("Usuarios", Usuario);
-                
+                usuario.BaseAddress = new Uri("https ://localhost:44316");
+                var postJob = usuario.PostAsJsonAsync<Usuarios>("Create", Usuario);
+
 
                 var postResult = postJob.Result;
                 if (postResult.IsSuccessStatusCode)

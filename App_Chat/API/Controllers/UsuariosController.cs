@@ -1,8 +1,15 @@
-﻿using API.Models;
-using API.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using API.Models;
+using API.Services;
+using App_Chat.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
