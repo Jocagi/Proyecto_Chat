@@ -93,7 +93,7 @@ namespace App_Chat.Controllers
                         misMensajes = readJob.Result;
 
                         //Convertir lista a html
-                        string html = "";
+                        string html = " ";
 
                         foreach (var item in misMensajes)
                         {
@@ -111,13 +111,13 @@ namespace App_Chat.Controllers
                     }
                     else
                     {
-                        return "";
+                        return "Error en el servidor";
                     }
                 }
             }
             catch (Exception e)
             {
-                return "";
+                return "Porfavor autenticarse de nuevo";
                 throw;
             }
         }
