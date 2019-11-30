@@ -23,18 +23,18 @@ namespace API.Services
         public Usuarios Get(string id) =>
             _usuarios.Find<Usuarios>(usuario => usuario.Id == id).FirstOrDefault();
 
-        public Usuarios Create (Usuarios usuarios)
+        public Usuarios Create (Usuarios usuario)
         {
-            _usuarios.InsertOne(usuarios);
-            return usuarios;
+            _usuarios.InsertOne(usuario);
+            return usuario;
         }
         public void Update(string id, Usuarios usuariosIn) =>
-            _usuarios.ReplaceOne(usuarios => usuarios.Id == id, usuariosIn);
+            _usuarios.ReplaceOne(usuario => usuario.Id == id, usuariosIn);
 
         public void Remove(Usuarios usuariosIn) =>
             _usuarios.DeleteOne(usuarios => usuarios.Id == usuariosIn.Id);
 
         public void Remove(string id) =>
-            _usuarios.DeleteOne(usuarios => usuarios.Id == id);
+            _usuarios.DeleteOne(usuario => usuario.Id == id);
     }
 }

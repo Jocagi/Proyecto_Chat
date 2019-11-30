@@ -44,16 +44,25 @@ namespace App_Chat.Controllers
         [HttpPost]
         public ActionResult CrearUsuario(Usuarios Usuario)
         {
-
-            using (var usuario = new HttpClient())
+            try
             {
-                usuario.BaseAddress = new Uri("https ://localhost:44316");
-                var postJob = usuario.PostAsJsonAsync<Usuarios>("Create", Usuario);
+                Usuarios nuevo = new Usuarios();
+                
+
+                using (var usuario = new HttpClient())
+                {
+                    usuario.BaseAddress = new Uri("https ://localhost:44316");
+                    var postJob = usuario.PostAsJsonAsync<Usuarios>("Create", Usuario);
 
 
-                var postResult = postJob.Result;
-                if (postResult.IsSuccessStatusCode)
-                    return RedirectToAction("Index");
+                    var postResult = postJob.Result;
+                    if (postResult.IsSuccessStatusCode)
+                        return RedirectToAction("Index");
+                }
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Login", "Login");
             }
 
             ModelState.AddModelError(string.Empty, "Error al ingresar usuario");

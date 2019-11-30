@@ -23,9 +23,13 @@ namespace API.Controllers
             _UsuariosService = UsuariosService;
         }
         //http://localhost:<port>/api/Usuarios
-        // GET: api/Usuarios
-        [HttpGet("{id:length(24)}", Name = "GetUsuario")]
+        [HttpGet]
+        public ActionResult<List<Usuarios>> Get() =>
+            _UsuariosService.Get();
 
+        //http://localhost:<port>/api/Usuarios/{id }
+        [HttpGet("{id:length(24)}", Name = "GetUsuario")]
+        [Authorize]
         public ActionResult<Usuarios> Get(string id)
         {
             var Usuario = _UsuariosService.Get(id);
@@ -38,6 +42,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult<Usuarios> Create(Usuarios Usuario)
         {
             _UsuariosService.Create(Usuario);
