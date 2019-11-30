@@ -72,7 +72,16 @@ namespace API
                 sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
 
             services.AddSingleton<ChatService>();
+
+            //User Databse Configuration
             
+            services.Configure<UserDatabaseSettings>(
+                Configuration.GetSection(nameof(UserDatabaseSettings)));
+
+            services.AddSingleton<IUserDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<UserDatabaseSettings>>().Value);
+
+            services.AddSingleton<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
