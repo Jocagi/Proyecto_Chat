@@ -66,17 +66,54 @@ namespace App_Chat.Controllers
 
         private ListaDeContactos obtenerContactos()
         {
-            List<Contacto> contactos = new List<Contacto>() {new Contacto("Jose", "~/Images/Gaticornio.png"), new Contacto("Genesis", "~/Images/pato.jpg") };
+            List<Contacto> contactos = new List<Contacto>();
             ListaDeContactos nuevo = new ListaDeContactos(contactos);
-            nuevo.usuario = "Bob";
             nuevo.foto = "~/Images/pato.jpg";
+            
+            try
+            {
+                int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
 
-            return nuevo;
+                using (var client = new HttpClient())
+                {
+                    string adress = "/api/users/";
+                    client.BaseAddress = new Uri("https://localhost:44316/api/users");
+                    var responseTask = client.GetAsync(adress);
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readJob = result.Content.ReadAsAsync<IList<Usuario>>();
+                        readJob.Wait();
+
+                        var lista = readJob.Result;
+                        
+                        foreach (var item in lista)
+                        {
+                            nuevo.Contactos.Add(new Contacto(item.username, ""));
+                        }
+
+                        return nuevo;
+                    }
+                    else
+                    {
+                        return nuevo;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return nuevo;
+            }
         }
 
         [HttpGet]
         public string Mensajes(string id)
         {
+            if (id == null)
+            {
+                return "";
+            }
             string usuario = id.Replace(" ", "");
             IEnumerable<Message> misMensajes = null;
 

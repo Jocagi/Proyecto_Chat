@@ -40,6 +40,7 @@ namespace API.Controllers
         [HttpPost]
         public ActionResult<Usuario> Create(Usuario User)
         {
+            
             _UserService.Create(User);
 
             return CreatedAtRoute("GetUser", new { id = User.Id.ToString() }, User);

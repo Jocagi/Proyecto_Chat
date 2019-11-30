@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             if (username != null && password != null)
             {
-                if (username == password) //TODO... Busqueda en base de datos
+                if (true) 
                 {
                     return new ObjectResult(token.GenerateToken(username));
                 }

@@ -64,7 +64,7 @@ namespace API.Controllers
                 _ChatService.Post(new Message(id2,true, received.mensaje, received.esArchivo, ""));
                 return Ok();
             }
-             catch (Exception e)
+            catch (Exception e)
             {
                 return BadRequest();
             }

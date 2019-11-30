@@ -66,20 +66,10 @@
         <div id="contacts">
             <ul style="list-style-type: none">
 
-                <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='  Alice'">
-                    <div class="wrap">
-                        <img alt="" src="@Url.Content("~/Images/Gaticornio.png")">
-                        <div class="meta">
-                            <p class="name">Alice</p>
-                        </div>
-                    </div>
-                </li>
-
                 @foreach (var item in Model.Contactos)
                 {
                     <li class="contact" onclick="document.getElementById('CurrentChat').innerHTML='  @item.username';">
                         <div class="wrap">
-                            <img alt="" src="@Url.Content(item.imagen)">
                             <div class="meta">
                                 <p class="name">@item.username</p>
                             </div>
@@ -91,7 +81,7 @@
         </div>
 
         <div id="bottom-bar">
-            <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Salir</span></button>
+            <button id="addcontact" onclick="Principal()"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Salir</span></button>
             <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Configuracion</span></button>
         </div>
 
@@ -100,7 +90,7 @@
     <div class="content">
 
         <div class="contact-profile">
-            <p style="font-size: xx-large; align-content: center;" id="CurrentChat">Genesis</p>
+            <p style="font-size: xx-large; align-content: center;" id="CurrentChat"></p>
         </div>
 
         <div class="messages">
@@ -201,6 +191,10 @@
     function Redireccionar()
     {
         window.location = '/Chat/SubirArchivo?id=' + document.getElementById('CurrentChat').innerHTML;   
+    }
+
+    function Principal() {
+        window.location = '/Login/Login';
     }
     
 </script>
