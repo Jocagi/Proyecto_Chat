@@ -70,7 +70,7 @@ namespace App_Chat.Controllers
         [HttpGet]
         public string Mensajes(string id)
         {
-
+            string usuario = id.Replace(" ", "");
             IEnumerable<Message> misMensajes = null;
 
             try
@@ -79,7 +79,7 @@ namespace App_Chat.Controllers
 
                 using (var client = new HttpClient())
                 {
-                    string adress = "/api/chat/" + id;
+                    string adress = "/api/chat/" + usuario;
                     client.BaseAddress = new Uri("https://localhost:44316/api/chat");
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);

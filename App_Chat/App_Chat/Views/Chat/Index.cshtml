@@ -136,17 +136,20 @@
         setInterval(
             function () {
                 getMessages();
-            }, 2000000);
+            }, 15000);
 
         function getMessages() {
             //Obtener Mensajes
             $.ajax({
-                url: '/Chat/Mensajes/?id=' + document.getElementById('CurrentChat').innerHTML,
+                url: '/Chat/Mensajes/' + document.getElementById('CurrentChat').innerHTML,
                 method: 'GET',
                 contentType: 'application/json',
                 success: function (result, status, xhr) {
-                    $('#mensajes').empty();
-                    $('#mensajes').append(result);
+                    if (result != "")
+                    {
+                        $('#mensajes').empty();
+                        $('#mensajes').append(result);   
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert(("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText));

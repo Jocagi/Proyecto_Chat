@@ -9,6 +9,10 @@ namespace API.Models
 {
     public class Message
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id;
+
         public string chatID { get; set; }
         public bool recibido { get; set; }
         public string texto { get; set; }

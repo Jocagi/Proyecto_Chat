@@ -28,7 +28,7 @@ namespace API.Controllers
         public ActionResult<List<Message>> Get() =>
             _ChatService.Get();
 
-        [HttpGet("{id:length(24)}", Name = "GetChat")]
+        [HttpGet("{id}", Name = "GetChat")]
         [Authorize]
         public ActionResult<List<Message>> Get(string id)
         {
