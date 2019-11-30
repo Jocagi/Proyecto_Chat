@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using App_Chat.Models;
 using Microsoft.Ajax.Utilities;
+using Recursos;
+using Utilities;
 
 namespace App_Chat.Controllers
 {
@@ -24,12 +26,16 @@ namespace App_Chat.Controllers
             try
             {
                 string token = HttpContext.Request.Cookies["userID"].Value;
+                int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
 
+                SDES cipher = new SDES();
+                string mensajeCifrado = cipher.CifrarTexto(mensaje, cifradoValue);
+                
                 MensajeModelo nuevo = new MensajeModelo();
-                nuevo.mensaje = mensaje;
+                nuevo.mensaje = mensajeCifrado;
                 nuevo.receptor = persona;
                 nuevo.receptor = nuevo.receptor.Replace(" ", "");
-                
+
 
                 using (var client = new HttpClient())
                 {
@@ -76,6 +82,7 @@ namespace App_Chat.Controllers
             try
             {
                 string token = HttpContext.Request.Cookies["userID"].Value;
+                int cifradoValue = Int16.Parse(HttpContext.Request.Cookies["cifrado"].Value);
 
                 using (var client = new HttpClient())
                 {
@@ -92,18 +99,23 @@ namespace App_Chat.Controllers
                         readJob.Wait();
                         misMensajes = readJob.Result;
 
+                        SDES cipher = new SDES();
+
                         //Convertir lista a html
                         string html = " ";
 
                         foreach (var item in misMensajes)
                         {
+                            //Descifrar
+                            string mensaje = cipher.DescifrarTexto(item.texto, cifradoValue);
+
                             if (item.recibido)
                             {
-                                html += $"<li class=\"replies\"><p>{item.texto}</p></li>";
+                                html += $"<li class=\"replies\"><p>{mensaje}</p></li>";
                             }
                             else
                             {
-                                html += $"<li class=\"sent\"><p>{item.texto}</p></li>";
+                                html += $"<li class=\"sent\"><p>{mensaje}</p></li>";
                             }
                         }
 

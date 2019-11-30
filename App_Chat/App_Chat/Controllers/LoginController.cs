@@ -22,6 +22,7 @@ namespace App_Chat.Controllers
         {
             ViewBag.Message = "";
             HttpContext.Response.Cookies.Add(new HttpCookie("language", "SPANISH"));
+            HttpContext.Response.Cookies.Add(new HttpCookie("cifrado", "38"));
             return View();
         }
         [HttpPost]
